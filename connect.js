@@ -91,12 +91,7 @@ function onMessage(msg){
 		//handle sdp
 		pc.setRemoteDescription(new RTCSessionDescription(msg.sdp), function(){
 			if (pc.remoteDescription.type === 'offer'){
-				pc.createAnswer(localDescCreated, function(err) {console.log(err); }, {
-					mandatory: {
-						OfferToReceiveAudio: true,
-						OfferToReceiveVideo: true
-					}
-				});
+				pc.createAnswer(localDescCreated);
 			}
 		});
 	} else {
