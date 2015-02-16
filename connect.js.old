@@ -1,0 +1,91 @@
+//Global variables
+var users = {
+	phineas: {
+		jid: 'phineas@yuanshuo.me',
+		password: '19910202a'
+	},
+	joe: {
+		jid: 'joe@yuanshuo.me',
+		password: '19910202a'
+	}
+};
+
+var xmppClient;
+
+
+document.querySelector('button').onclick = function(){
+	if (this.id === 'start') {
+		//start a RTC
+	} else{
+		//log in
+		xmppClient = new Strophe.Connection('http://0.0.0.0:5280/http-bind/');
+
+		xmppClient.connect(users[this.id].jid, users[this.id].password, function(status){
+			if (status === Strophe.Status.CONNECTED) {
+				//connection setup
+				//console.log('Connection setup');
+
+				//broadcast presence
+				xmppClient.send($pres({}));
+
+				alert('log in success');
+			}
+		});
+	}
+};
+
+
+var xmppClient = new Strophe.Connection('http://0.0.0.0:5280/http-bind/');
+
+xmppClient.connect('phineas@yuanshuo.me', '19910202a', function(status){
+	if (status === Strophe.Status.CONNECTED) {
+		//connection setup
+		console.log('Connection setup');
+
+		//broadcast presence
+		xmppClient.send($pres({}));
+
+		alert('log in success');
+		//send message
+		/*
+		var msg = $msg({
+			to: 'joe@yuanshuo.me',
+			type: 'chat'
+		})
+		.cnode(Strophe.xmlElement('body', 'Hello Joe')).up()
+		.c('active', {xmlns: 'http://jabber.org/protocol/chatstates'});
+
+		xmppClient.send(msg);
+	   */
+		
+		//
+	}
+});
+
+/*
+xmppClient.xmlInput = function(xml) {
+	console.log(xml);
+}
+*/
+
+xmppClient.addHandler(function(stanza){
+	console.log(stanza);
+
+	return true;
+}, 'jabber:iq:roster');
+
+xmppClient.addHandler(function(stanza){
+	console.log(stanza);
+
+	return true;
+}, null, 'presence');
+
+xmppClient.addHandler(function(message){
+	var body = message.getElementsByTagName('body')[0];
+
+	if (body) {
+		console.log(body);
+	}
+
+	return true;
+}, null, 'message');
