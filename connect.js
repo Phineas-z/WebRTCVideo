@@ -36,7 +36,7 @@ document.querySelectorAll('button').forEach(function(button){
 			start(true);
 		} else{
 			//log in
-			xmppClient = new Strophe.Connection('http://0.0.0.0:5280/http-bind/');
+			xmppClient = new Strophe.Connection('http://yuanshuo.me:5280/http-bind/');
 
 			xmppClient.connect(users[this.id].jid, users[this.id].password, function(status){
 				if (status === Strophe.Status.CONNECTED) {
