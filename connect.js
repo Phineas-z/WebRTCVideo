@@ -102,6 +102,17 @@ function onMessage(msg){
 
 //Start
 function start(isSender){
+	
+	navigator.getUserMedia({
+		'audio': true,
+		'video': true
+	}, function(stream){
+		document.querySelector('#local').src = URL.createObjectURL(stream);
+		pc.addStream(stream);
+	}, function(err){
+		console.log(err);
+	});
+
 	pc = new RTCPeerConnection(config);
 
 	pc.onicecandidate = function(event){
@@ -127,15 +138,6 @@ function start(isSender){
 		document.querySelector('#remote').src = URL.createObjectURL(event.stream);
 	};
 
-	navigator.getUserMedia({
-		'audio': true,
-		'video': true
-	}, function(stream){
-		document.querySelector('#local').src = URL.createObjectURL(stream);
-		pc.addStream(stream);
-	}, function(err){
-		console.log(err);
-	});
 }
 
 function localDescCreated(desc){
