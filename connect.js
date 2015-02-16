@@ -26,8 +26,7 @@ var config = {
 	}]
 };
 
-var xmppClient;
-var pc;
+var xmppClient, pc, localStream;
 
 document.querySelectorAll('button').forEach(function(button){
 	button.onclick = function(){
@@ -53,7 +52,20 @@ document.querySelectorAll('button').forEach(function(button){
 						return true;
 					}, null, 'message');
 
-					alert('log in success');
+					
+					navigator.getUserMedia({
+						'audio': true,
+						'video': true
+					}, function(stream){
+						document.querySelector('#local').src = URL.createObjectURL(stream);
+						//pc.addStream(stream);
+						localStream = stream;
+
+						alert('log in success');
+					}, function(err){
+						console.log(err);
+					});
+
 				}
 			});
 
@@ -103,17 +115,9 @@ function onMessage(msg){
 //Start
 function start(isSender){
 	
-	navigator.getUserMedia({
-		'audio': true,
-		'video': true
-	}, function(stream){
-		document.querySelector('#local').src = URL.createObjectURL(stream);
-		pc.addStream(stream);
-	}, function(err){
-		console.log(err);
-	});
-
 	pc = new RTCPeerConnection(config);
+
+	pc.addStream(localStream);
 
 	pc.onicecandidate = function(event){
 		if (isSender && event.candidate){
